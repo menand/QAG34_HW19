@@ -1,0 +1,42 @@
+plugins {
+    id 'java-library'
+    id 'com.github.ben-manes.versions' version '0.52.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencyUpdates {
+    resolutionStrategy {
+        componentSelection {
+            all { ComponentSelection selection ->
+                def unstableKeywords = ['alpha', 'beta', 'rc', 'm', 'snapshot']
+                boolean isUnstable = unstableKeywords.any { keyword ->
+                    selection.candidate.version.toLowerCase().contains(keyword)
+                }
+                if (isUnstable) {
+                    selection.reject("Unstable version: ${selection.candidate.version}")
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    testImplementation(
+            'org.junit.jupiter:junit-jupiter:5.13.1',
+            'org.junit.platform:junit-platform-launcher:1.13.1',
+            'org.seleniumhq.selenium:selenium-java:4.33.0',
+            'org.aeonbits.owner:owner:1.0.12',
+            'io.github.bonigarcia:webdrivermanager:6.1.0',
+            'org.assertj:assertj-core:3.27.3',
+            'org.slf4j:slf4j-simple:2.0.17',
+            'com.codeborne:selenide:7.9.3'
+    )
+}
+
+test {
+    useJUnitPlatform()
+    systemProperties System.getProperties()
+}
